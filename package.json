@@ -1,0 +1,23 @@
+{
+  "name": "simple-private-state",
+  "version": "0.1.0",
+  "description": "simple-private-state",
+  "main": "lib/private.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/akmjenkins/simple-private-state.git"
+  },
+  "scripts": {
+    "test": "mocha --compilers js:babel-core/register",
+    "compile": "babel -d lib/ src/"
+  },
+  "author": "Adam Jenkins",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "mocha": "^3.5.0"
+  }
+}
