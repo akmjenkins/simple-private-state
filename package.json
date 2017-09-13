@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "description": "simple-private-state",
   "main": "lib/private.js",
+  "module": "src/private.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/akmjenkins/simple-private-state.git"
