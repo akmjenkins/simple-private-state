@@ -107,7 +107,7 @@ class User
 		Private.set.call(
 			this,
 			'password',
-			password
+			1234
 		)
 	}
 
