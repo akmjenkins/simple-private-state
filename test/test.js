@@ -1,7 +1,8 @@
 import assert from 'assert';
-import Private from '../src/private';
+import PrivateState from '../src/private';
 
 
+let p = new PrivateState();
 let user;
 class User {
 
@@ -11,7 +12,7 @@ class User {
 
   setPassword(password)
   {
-    Private.set.call(
+    p.set(
       this,
       'password',
       password
@@ -20,7 +21,7 @@ class User {
 
   getPassword()
   {
-    return Private.get.call(
+    return p.get(
       this,
       'password'
     )
@@ -28,7 +29,7 @@ class User {
 
   setMultiple(obj)
   {
-    Private.setObject.call(
+    p.setObject(
       this,
       obj
     );
@@ -36,7 +37,7 @@ class User {
 
   getMultiple(keys)
   {
-    return Private.get.call(
+    return p.get(
       this,
       keys
     );
@@ -63,7 +64,15 @@ it('sets multiple private members',() => {
   }
   user.setMultiple(m);
   let r = user.getMultiple(Object.keys(m));
-  assert.ok(r.username === m.username && r.password === m.password);
+  assert.ok(
+    r.username === m.username && r.password === m.password,
+    `
+      r is ${Object.keys(r)}
+      Username is ${r.username}, should be ${m.username}
+      Password is ${r.password}, should be ${m.password}
+      ${Object.values(p.get(user))}
+    `
+  );
 });
 
 it('returns the requested private members only',() => {

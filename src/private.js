@@ -1,39 +1,45 @@
-let MEMBERS = new WeakMap();
-
-let create = function() {
-	let o;
-	MEMBERS.set(this,(o = {}));
-	return o;
+let get = function(context)
+{
+	let store = this.weakMap.get(context);
+	if(!store) {
+		this.weakMap.set(context,(store = {}));
+	}
+	return store;
 }
 
-let p;
-export default p = {
+export default class PrivateState {
 
-	get(name) {
-		let o = MEMBERS.get(this) || create.call(this);
+	constructor(context)
+	{
+		this.weakMap = new WeakMap();
+	}
 
-		if(typeof name === 'undefined') {
-			return o;
+	get(context,name)
+	{
+		if(!name) {
+			return get.call(this,context);
 		}
 
 		if(Array.isArray(name)) {
-			return name.reduce((carry,name) => {
-				carry[name] = p.get.call(this,name);
-				return carry;
+			return name.reduce((c,n) => {
+				c[n] = this.get(context,n);
+				return c;
 			},{});
 		}
 
-		return o[name];
-	},
+		return get.call(this,context)[name];
+	}
 
-	set(name,value) {
-		let o = MEMBERS.get(this) || create.call(this);
-		o[name] = value;
-	},
+	set(context,name,value)
+	{
+		Object.assign(get.call(this,context),{[name]:value});
+		return this;
+	}
 
-	setObject(object) {
-		let o;
-		Object.assign((o = MEMBERS.get(this) || create.call(this)),object);
-	}	
+	setObject(context,object)
+	{
+		Object.assign(get.call(this,context),object);
+		return this;
+	}
 
 }

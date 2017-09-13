@@ -83,28 +83,27 @@ which made your instances ineligible for [Garbage Collection (GC)][gc] and was a
   [gc]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Memory_Management#Garbage_collection
 
 
-So with this in mind, I made a super-simple wrapper around a WeakMap to allow all your objects relatively* easy access to their own private member variables in the form of a simple key-value store.
-
-*I say relatively, because this implementation does burden you with the requirement of `call`-ing the methods provided by **SimplePrivateState** so you can set
-the correct context. This can be implemented several other ways for those who like their syntactic sugar, this is just the way I chose.
+So with this in mind, I made a super-simple wrapper around a WeakMap to allow all your instances relatively easy access to their own private member variables in the form of a simple key-value store.
 
 ### Usage
 ---
 
 ```js
 //Node
-import Private from 'simple-private-state'
+import PrivateState from 'simple-private-state'
+let p = new PrivateState();
 
 class User
 {
 
 	constructor() 
 	{
+
 	}
 
 	setPassword(password)
 	{
-		Private.set.call(
+		p.set(
 			this,
 			'password',
 			1234
@@ -118,38 +117,40 @@ class User
 ### API
 ---
 
-#### Private.set.call(instance,key,value)
+#### set(instance,key,value)
 
 e.g.
 ```js
-	class User {
-		constructor()
-		{
-			Private.set.call(
-				this,
-				'password',
-				1234
-			);
+import PrivateState from 'simple-private-state'
+let p = new PrivateState();
+class User {
+	constructor()
+	{
+		p.set(
+			this,
+			'password',
+			1234
+		);
 
-			Private.set.call(
-				this,
-				'username',
-				'ajenkins'
-			);
+		p.set(
+			this,
+			'username',
+			'ajenkins'
+		);
 
-			Private.set.call(
-				this,
-				'data',
-				{
-					age:32,
-					name:'adam'
-				}
-			)
-		}
+		p.set(
+			this,
+			'data',
+			{
+				age:32,
+				name:'adam'
+			}
+		)
 	}
+}
 ```
 
-#### Private.get.call(instance,key(s))
+#### get(instance,key(s))
 
 When called with an array, an object will be returned containing the key value pairs for all keys that were passed in.
 Alternatively, you can call it with a single [object-key identifier][oki] and it will return whatever the value is
@@ -158,80 +159,84 @@ Alternatively, you can call it with a single [object-key identifier][oki] and it
 
 e.g.
 ```js
-	class User {
-		someMethod()
-		{
-			Private.get.call(
-				this,
-				'password'
-			);
-			//returns 1234, from the example above
+import PrivateState from 'simple-private-state'
+let p = new PrivateState();
+class User {
+	someMethod()
+	{
+		p.get(
+			this,
+			'password'
+		);
+		//returns 1234, from the example above
 
-			Private.get.call(
-				this,
-				['username','password']
-			);
-			//returns from the example above:
-			//	{
-			//		username:'ajenkins',
-			//		password:1234
-			//	}
+		p.get(
+			this,
+			['username','password']
+		);
+		//returns from the example above:
+		//	{
+		//		username:'ajenkins',
+		//		password:1234
+		//	}
 
-			Private.get.call(
-				this,
-				'data'
-			)
-			//returns from the example above:
-			//	{
-			//		age:32,
-			//		name:'adam'
-			//	}
-		}
+		p.get(
+			this,
+			'data'
+		)
+		//returns from the example above:
+		//	{
+		//		age:32,
+		//		name:'adam'
+		//	}
 	}
+}
 ```
 
-#### Private.setObject.call(instance,keyValues)
+#### setObject(instance,keyValues)
 
 Allows you to extend (not overwrite) the current private key value store for an instance
 
 e.g.
 ```js
-	class User {
-		someMethod()
-		{
-			Private.setObject.call(
-				this,
-				{
-					username:'ajenkins',
-					password:1234
+import PrivateState from 'simple-private-state'
+let p = new PrivateState();
+class User {
+	someMethod()
+	{
+		p.setObject(
+			this,
+			{
+				username:'ajenkins',
+				password:1234
+			}
+		);
+
+		p.get(this,'username'); 
+		// returns akjenkins
+
+
+		// extend the private member set
+		p.setObject(
+			this,
+			{
+				data:{
+					age:32,
+					name:'adam'
 				}
-			);
+			}
+		);
 
-			Private.get.call(this,'username'); 
-			// returns akjenkins
-
-
-			// extend the private member set
-			Private.setObject.call(
-				this,
-				{
-					data:{
-						age:32,
-						name:'adam'
-					}
+		p.get(this,['username','data']); 
+		/* returns
+			{
+				username:'ajenkins',
+				data:{
+					age:32,
+					name:'adam'
 				}
-			);
-
-			Private.get.call(this,['username','data']); 
-			/* returns
-				{
-					username:'ajenkins',
-					data:{
-						age:32,
-						name:'adam'
-					}
-				}
-			*/
-		}
+			}
+		*/
 	}
+}
 ```
