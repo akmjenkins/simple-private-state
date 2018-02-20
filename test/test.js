@@ -75,6 +75,14 @@ it('sets multiple private members',() => {
   );
 });
 
+it('sets and returns a default value if private member not present',() => {
+  let def = null;
+  assert.ok(
+    p.get(user,'some unset property',def) === def
+  );
+
+});
+
 it('returns the requested private members only',() => {
   let m = {
     username:'adam',

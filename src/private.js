@@ -14,7 +14,7 @@ export default class PrivateState {
 		this.weakMap = new WeakMap();
 	}
 
-	get(context,name)
+	get(context,name,def)
 	{
 		if(!name) {
 			return get.call(this,context);
@@ -27,7 +27,7 @@ export default class PrivateState {
 			},{});
 		}
 
-		return get.call(this,context)[name];
+		return get.call(this,context)[name] || (this.set(context,name,def) && def);
 	}
 
 	set(context,name,value)
