@@ -1,4 +1,4 @@
-let get = function(context)
+const get = function(context)
 {
 	let store = this.weakMap.get(context);
 	if(!store) {
@@ -9,7 +9,7 @@ let get = function(context)
 
 export default class PrivateState {
 
-	constructor(context)
+	constructor()
 	{
 		this.weakMap = new WeakMap();
 	}
@@ -39,6 +39,16 @@ export default class PrivateState {
 	setObject(context,object)
 	{
 		Object.assign(get.call(this,context),object);
+		return this;
+	}
+
+	clear(context,name)
+	{
+		if(name) {
+			delete get.call(this,context)[name];
+		} else {
+			this.weakMap.delete(context);
+		}
 		return this;
 	}
 

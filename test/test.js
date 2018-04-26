@@ -94,3 +94,36 @@ it('returns the requested private members only',() => {
   let r = user.getMultiple(['username','password']);
   assert.ok(Object.keys(r).some((k) => { return k === 'username' || k === 'password'; }))
 });
+
+it('should remove all values when calling clear without a second parameter',() => {
+
+  let m = {
+    username:'adam',
+    password:1234,
+    age:32
+  }
+
+  user.setMultiple(m);
+  p.clear(user);
+  assert.ok(Object.keys(p.get(user)).length === 0);
+
+});
+
+it('should only remove certain values when calling clear with a second parameter',() => {
+
+  let m = {
+    username:'adam',
+    password:1234,
+    age:32
+  }
+
+  user.setMultiple(m);
+  p.clear(user,'password');
+  let r = Object.keys(p.get(user));
+  assert.ok(r.length == 2);
+  assert.ok(r.includes('username'));
+  assert.ok(r.includes('age'));
+  assert.ok(!r.includes('password'));
+
+});
+
